@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Manager 📚</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>My Reading List</h1>
+
+        <a href="/create" class="btn btn-full">Add a New Book</a>
+
+        <!-- New Section for Deleting the Highest ID Book -->
+        <div class="card">
+            <h2>Special Actions</h2>
+            <form action="/delete-highest-id" method="POST">
+                <button type="submit" class="btn btn-danger btn-full">Delete The Last Added Book</button>
+            </form>
+        </div>
+        <!-- End of New Section -->
+
+
+        <div class="card book-list-card">
+            <h2>Current Books</h2>
+            <ul class="book-list">
+                <% books.forEach(book => { %>
+                    <li>
+                        <div class="book-info">
+                            <strong><%= book.title %></strong>
+                            <span>by <%= book.author %> (ID: <%= book.id %>)</span>
+                        </div>
+                        <div class="book-actions">
+                            <a href="/update/<%= book.id %>" class="btn-action btn-update">Update</a>
+                            <a href="/delete/<%= book.id %>" class="btn-action btn-delete">Delete</a>
+                        </div>
+                    </li>
+                <% }) %>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
