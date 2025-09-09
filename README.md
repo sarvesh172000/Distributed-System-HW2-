@@ -46,7 +46,7 @@ Start the server with:
 ```bash
 node app.js
 ```
-The app will be available at `http://localhost:3000` (or the port specified in your code).
+The app will be available at `http://localhost:8080` (or the port specified in your code).
 
 ## Usage
 - Click **Add a New Book** to add a book to your list.
