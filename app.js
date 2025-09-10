@@ -4,11 +4,13 @@ const app = express();
 const port = 8080;
 
 // --- In-Memory Data Store ---
+// We start with some sample data.
 let books = [
     { id: 1, title: "The Hobbit", author: "J.R.R. Tolkien" },
     { id: 2, title: "1984", author: "George Orwell" },
     { id: 3, title: "To Kill a Mockingbird", author: "Harper Lee" },
 ];
+// This ensures new books get a unique ID.
 let nextId = 4;
 
 // --- Middleware ---
@@ -17,26 +19,29 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 
-// --- Routes ---
+// --- Main Routes ---
 
-// 1. READ all books (Home Page)
+// READ: Display the home page with all books.
 app.get('/', (req, res) => {
     res.render('home', { books: books });
 });
 
-// 2. CREATE a book (Show form and handle submission)
+// CREATE: Show the form to add a new book.
 app.get('/create', (req, res) => {
     res.render('create');
 });
 
+// CREATE: Handle the form submission to add a new book.
 app.post('/create', (req, res) => {
     const { title, author } = req.body;
-    const newBook = { id: nextId++, title, author };
-    books.push(newBook);
+    if (title && author) {
+        const newBook = { id: nextId++, title, author };
+        books.push(newBook);
+    }
     res.redirect('/');
 });
 
-// 3. UPDATE a book (Show form and handle submission)
+// UPDATE: Show the form to edit a specific book.
 app.get('/update/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const book = books.find(b => b.id === id);
@@ -47,6 +52,7 @@ app.get('/update/:id', (req, res) => {
     }
 });
 
+// UPDATE: Handle the form submission to update a specific book.
 app.post('/update/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const book = books.find(b => b.id === id);
@@ -57,7 +63,7 @@ app.post('/update/:id', (req, res) => {
     res.redirect('/');
 });
 
-// 4. DELETE a book (Show confirmation and handle deletion)
+// DELETE: Show the confirmation page for deleting a specific book.
 app.get('/delete/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const book = books.find(b => b.id === id);
@@ -68,6 +74,7 @@ app.get('/delete/:id', (req, res) => {
     }
 });
 
+// DELETE: Handle the confirmation to delete a specific book.
 app.post('/delete/:id', (req, res) => {
     const id = parseInt(req.params.id);
     books = books.filter(b => b.id !== id);
@@ -75,21 +82,24 @@ app.post('/delete/:id', (req, res) => {
 });
 
 
-// 5. NEW: DELETE the book with the HIGHEST ID
-app.post('/delete-highest-id', (req, res) => {
-    // If there are no books, do nothing and just redirect.
-    if (books.length === 0) {
-        return res.redirect('/');
+// --- Special Action Routes ---
+
+// UPDATE Book with ID 1 to "Harry Potter".
+app.post('/update-book-one', (req, res) => {
+    const bookToUpdate = books.find(book => book.id === 1);
+    if (bookToUpdate) {
+        bookToUpdate.title = "Harry Potter";
+        bookToUpdate.author = "J.K Rowling";
     }
+    res.redirect('/');
+});
 
-    // Find the highest ID.
-    // Math.max(...[1, 2, 3]) will return 3.
-    const maxId = Math.max(...books.map(book => book.id));
-
-    // Filter the books array, keeping only the books that DON'T have the highest ID.
-    books = books.filter(book => book.id !== maxId);
-
-    // Redirect back to the homepage to show the updated list.
+// DELETE the book with the HIGHEST ID.
+app.post('/delete-highest-id', (req, res) => {
+    if (books.length > 0) {
+        const maxId = Math.max(...books.map(book => book.id));
+        books = books.filter(book => book.id !== maxId);
+    }
     res.redirect('/');
 });
 

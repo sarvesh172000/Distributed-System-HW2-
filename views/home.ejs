@@ -12,32 +12,40 @@
 
         <a href="/create" class="btn btn-full">Add a New Book</a>
 
-        <!-- New Section for Deleting the Highest ID Book -->
         <div class="card">
             <h2>Special Actions</h2>
-            <form action="/delete-highest-id" method="POST">
-                <button type="submit" class="btn btn-danger btn-full">Delete The Last Added Book</button>
-            </form>
+            <div class="actions-grid">
+                <!-- Form to update book #1 -->
+                <form action="/update-book-one" method="POST">
+                    <button type="submit" class="btn btn-warning btn-full">Update Book #1 to Harry Potter</button>
+                </form>
+                <!-- Form to delete the book with the highest ID -->
+                <form action="/delete-highest-id" method="POST">
+                    <button type="submit" class="btn btn-danger btn-full">Delete The Last Added Book</button>
+                </form>
+            </div>
         </div>
-        <!-- End of New Section -->
-
 
         <div class="card book-list-card">
             <h2>Current Books</h2>
-            <ul class="book-list">
-                <% books.forEach(book => { %>
-                    <li>
-                        <div class="book-info">
-                            <strong><%= book.title %></strong>
-                            <span>by <%= book.author %> (ID: <%= book.id %>)</span>
-                        </div>
-                        <div class="book-actions">
-                            <a href="/update/<%= book.id %>" class="btn-action btn-update">Update</a>
-                            <a href="/delete/<%= book.id %>" class="btn-action btn-delete">Delete</a>
-                        </div>
-                    </li>
-                <% }) %>
-            </ul>
+            <% if (books.length > 0) { %>
+                <ul class="book-list">
+                    <% books.forEach(book => { %>
+                        <li>
+                            <div class="book-info">
+                                <strong><%= book.title %></strong>
+                                <span>by <%= book.author %> (ID: <%= book.id %>)</span>
+                            </div>
+                            <div class="book-actions">
+                                <a href="/update/<%= book.id %>" class="btn-action btn-update">Update</a>
+                                <a href="/delete/<%= book.id %>" class="btn-action btn-delete">Delete</a>
+                            </div>
+                        </li>
+                    <% }) %>
+                </ul>
+            <% } else { %>
+                <p class="empty-message">Your reading list is empty. Add a book to get started!</p>
+            <% } %>
         </div>
     </div>
 </body>
